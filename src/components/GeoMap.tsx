@@ -43,7 +43,7 @@ export function GeoMap({
   );
   const projection = useMemo(() => {
     const p = geoEqualEarth();
-    const fc = focusFeatureCollection(items.map((x) => x.feature) as any);
+    const fc = focusFeatureCollection(items.map((x) => x.feature));
     if (items.length)
       p.fitExtent(
         [
@@ -83,7 +83,7 @@ export function GeoMap({
       <title id={titleId}>{label}</title>
       <rect className="ocean" width={WIDTH} height={HEIGHT} rx="26" />
       {items.map(({ country, feature, region }) => {
-        const d = path(feature as any) ?? "";
+        const d = path(feature) ?? "";
         const isSelected = answered && country.code === selectedCode;
         const isTarget = answered && country.code === targetCode;
         const state = isTarget ? "correct" : isSelected ? "incorrect" : "";

@@ -1,12 +1,12 @@
 import { feature } from "topojson-client";
+import type { ExtendedFeature, GeoGeometryObjects } from "d3-geo";
 import topology from "world-atlas/countries-50m.json";
 import { allCountries, type Country, type Region } from "../data/geography";
 
-type GeoFeature = {
-  type: "Feature";
-  properties: { name?: string };
-  geometry: unknown;
-};
+type GeoFeature = ExtendedFeature<
+  GeoGeometryObjects,
+  { name?: string } | null
+>;
 const collection = feature(
   topology as never,
   (topology as any).objects.countries,

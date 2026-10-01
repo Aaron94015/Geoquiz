@@ -1,40 +1,47 @@
-import { geoArea, geoCentroid, geoDistance } from "d3-geo";
+import {
+  geoArea,
+  geoCentroid,
+  geoDistance,
+  type ExtendedFeature,
+  type ExtendedFeatureCollection,
+  type GeoGeometryObjects,
+} from "d3-geo";
+import type { Polygon, Position } from "geojson";
 
-type Geometry = {
-  type: string;
-  coordinates?: any;
-  geometries?: Geometry[];
-};
-
-type Feature = {
-  type: "Feature";
-  properties?: unknown;
-  geometry: Geometry | null;
-};
+export type MapFeature = ExtendedFeature<GeoGeometryObjects>;
+type PolygonFeature = ExtendedFeature<Polygon>;
 
 const NEARBY_RADIANS = (8 * Math.PI) / 180;
 const SUBSTANTIAL_COMPONENT = 0.2;
 
-const polygonFeatures = (source: Feature): Feature[] => {
+const polygonFeatures = (source: MapFeature): PolygonFeature[] => {
   if (!source.geometry) return [];
-  if (source.geometry.type === "Polygon") return [source];
-  if (source.geometry.type !== "MultiPolygon") return [source];
-  return (source.geometry.coordinates ?? []).map((coordinates: any) => ({
+  if (source.geometry.type === "Polygon")
+    return [
+      {
+        type: "Feature",
+        properties: source.properties,
+        geometry: source.geometry,
+      },
+    ];
+  if (source.geometry.type !== "MultiPolygon") return [];
+  return source.geometry.coordinates.map((coordinates) => ({
     type: "Feature",
     properties: source.properties,
     geometry: { type: "Polygon", coordinates },
   }));
 };
 
-const rings = (feature: Feature): [number, number][] =>
-  feature.geometry?.type === "Polygon"
-    ? (feature.geometry.coordinates?.[0] ?? [])
-    : [];
+const rings = (feature: PolygonFeature): Position[] =>
+  feature.geometry?.coordinates[0] ?? [];
 
-const radius = (feature: Feature, center: [number, number]) =>
+const radius = (feature: PolygonFeature, center: [number, number]) =>
   rings(feature).reduce(
     (maximum, coordinate) =>
-      Math.max(maximum, geoDistance(center, coordinate as [number, number])),
+      Math.max(
+        maximum,
+        geoDistance(center, [coordinate[0], coordinate[1]]),
+      ),
     0,
   );
 
@@ -44,13 +51,15 @@ const radius = (feature: Feature, center: [number, number]) =>
  * components are also retained. Distant overseas territories no longer make
  * an otherwise compact region appear tiny.
  */
-export function focusFeatureCollection(features: Feature[]) {
+export function focusFeatureCollection(
+  features: MapFeature[],
+): ExtendedFeatureCollection<GeoGeometryObjects> {
   const countries = features.map((source) => {
     const parts = polygonFeatures(source)
       .map((feature) => ({
         feature,
-        area: geoArea(feature as any),
-        center: geoCentroid(feature as any) as [number, number],
+        area: geoArea(feature),
+        center: geoCentroid(feature),
       }))
       .sort((a, b) => b.area - a.area);
     const largestArea = parts[0]?.area ?? 0;

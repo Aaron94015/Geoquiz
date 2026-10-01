@@ -1,6 +1,10 @@
 import { geoBounds } from "d3-geo";
 import { describe, expect, it } from "vitest";
-import { focusFeatureCollection, layoutMarkerPoints } from "./viewport";
+import {
+  focusFeatureCollection,
+  layoutMarkerPoints,
+  type MapFeature,
+} from "./viewport";
 
 const square = (west: number, south: number, size = 2) => [
   [
@@ -21,12 +25,12 @@ describe("focusFeatureCollection", () => {
         type: "MultiPolygon",
         coordinates: [square(0, 45, 8), square(-54, 3, 2)],
       },
-    };
+    } satisfies MapFeature;
     const nearbyCountry = {
       type: "Feature" as const,
       properties: {},
       geometry: { type: "Polygon", coordinates: square(9, 47, 3) },
-    };
+    } satisfies MapFeature;
 
     const focus = focusFeatureCollection([franceLike, nearbyCountry]);
 
@@ -42,7 +46,7 @@ describe("focusFeatureCollection", () => {
         type: "MultiPolygon",
         coordinates: [square(0, 0, 4), square(30, 0, 3)],
       },
-    };
+    } satisfies MapFeature;
     expect(focusFeatureCollection([islandCountry]).features).toHaveLength(2);
   });
 });
