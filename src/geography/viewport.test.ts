@@ -35,7 +35,7 @@ describe("focusFeatureCollection", () => {
     const focus = focusFeatureCollection([franceLike, nearbyCountry]);
 
     expect(focus.features).toHaveLength(2);
-    expect(geoBounds(focus as any)[0][0]).toBeGreaterThan(-1);
+    expect(geoBounds(focus)[0][0]).toBeGreaterThan(-1);
   });
 
   it("keeps large secondary islands", () => {
