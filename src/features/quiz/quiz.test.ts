@@ -35,4 +35,8 @@ describe("quiz rules", () => {
     };
     expect(nextQuestion(quiz)).toBeNull();
   });
+  it("does not advance before the current question is answered", () => {
+    const quiz = createQuiz(region, () => 0.2);
+    expect(nextQuestion(quiz)).toBe(quiz);
+  });
 });

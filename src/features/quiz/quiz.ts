@@ -38,6 +38,7 @@ export function answerQuiz(quiz: Quiz, selected: Country): Quiz {
   };
 }
 export function nextQuestion(quiz: Quiz): Quiz | null {
+  if (!quiz.selected) return quiz;
   return quiz.index + 1 >= quiz.questions.length
     ? null
     : { ...quiz, index: quiz.index + 1, selected: null };
