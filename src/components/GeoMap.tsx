@@ -3,6 +3,10 @@ import { geoEqualEarth, geoPath, type GeoProjection } from "d3-geo";
 import type { Country, Region } from "../data/geography";
 import { featuresFor } from "../geography/boundaries";
 import { markerCoordinates } from "../geography/markers";
+import {
+  focusFeatureCollection,
+  layoutMarkerPoints,
+} from "../geography/viewport";
 
 type Props = {
   regions: Region[];
@@ -39,10 +43,7 @@ export function GeoMap({
   );
   const projection = useMemo(() => {
     const p = geoEqualEarth();
-    const fc = {
-      type: "FeatureCollection",
-      features: items.map((x) => x.feature),
-    } as any;
+    const fc = focusFeatureCollection(items.map((x) => x.feature));
     if (items.length)
       p.fitExtent(
         [
@@ -54,6 +55,24 @@ export function GeoMap({
     return p;
   }, [items]);
   const path = geoPath(projection as GeoProjection);
+  const markers = useMemo(
+    () =>
+      layoutMarkerPoints(
+        regions
+          .flatMap((r) => r.countries)
+          .filter((country) => markerCoordinates[country.code])
+          .map((item) => ({
+            item,
+            anchor: (projection(markerCoordinates[item.code]) ?? [0, 0]) as [
+              number,
+              number,
+            ],
+          })),
+        WIDTH,
+        HEIGHT,
+      ),
+    [projection, regions],
+  );
   return (
     <svg
       className="geo-map"
@@ -64,7 +83,7 @@ export function GeoMap({
       <title id={titleId}>{label}</title>
       <rect className="ocean" width={WIDTH} height={HEIGHT} rx="26" />
       {items.map(({ country, feature, region }) => {
-        const d = path(feature as any) ?? "";
+        const d = path(feature) ?? "";
         const isSelected = answered && country.code === selectedCode;
         const isTarget = answered && country.code === targetCode;
         const state = isTarget ? "correct" : isSelected ? "incorrect" : "";
@@ -114,39 +133,44 @@ export function GeoMap({
         );
       })}
       {interactiveCountries &&
-        regions
-          .flatMap((r) => r.countries)
-          .filter((c) => markerCoordinates[c.code])
-          .map((country) => {
-            const point = projection(markerCoordinates[country.code]) ?? [0, 0];
-            const state =
-              answered && country.code === targetCode
-                ? "correct"
-                : answered && country.code === selectedCode
-                  ? "incorrect"
-                  : "";
-            return (
-              <g
-                key={`marker-${country.code}`}
-                className={`marker ${state}`}
-                transform={`translate(${point[0]},${point[1]})`}
-                onClick={() => !answered && onCountry?.(country)}
-                role="button"
-                tabIndex={answered ? -1 : 0}
-                aria-label={country.name}
-                onKeyDown={(e) => {
-                  if (!answered && (e.key === "Enter" || e.key === " ")) {
-                    e.preventDefault();
-                    onCountry?.(country);
-                  }
-                }}
-              >
-                <circle className="marker-hit" r="22" />
-                <circle className="marker-ring" r="16" />
-                <circle className="marker-dot" r="5" />
-              </g>
-            );
-          })}
+        markers.map(({ item: country, anchor, point }) => {
+          const state =
+            answered && country.code === targetCode
+              ? "correct"
+              : answered && country.code === selectedCode
+                ? "incorrect"
+                : "";
+          return (
+            <g
+              key={`marker-${country.code}`}
+              className={`marker ${state}`}
+              transform={`translate(${point[0]},${point[1]})`}
+              onClick={() => !answered && onCountry?.(country)}
+              role="button"
+              tabIndex={answered ? -1 : 0}
+              aria-label={country.name}
+              onKeyDown={(e) => {
+                if (!answered && (e.key === "Enter" || e.key === " ")) {
+                  e.preventDefault();
+                  onCountry?.(country);
+                }
+              }}
+            >
+              {(point[0] !== anchor[0] || point[1] !== anchor[1]) && (
+                <line
+                  className="marker-leader"
+                  x1={anchor[0] - point[0]}
+                  y1={anchor[1] - point[1]}
+                  x2="0"
+                  y2="0"
+                />
+              )}
+              <circle className="marker-hit" r="22" />
+              <circle className="marker-ring" r="16" />
+              <circle className="marker-dot" r="5" />
+            </g>
+          );
+        })}
     </svg>
   );
 }
