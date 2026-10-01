@@ -58,7 +58,7 @@ export function GeoMap({
     <svg
       className="geo-map"
       viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-      role="img"
+      role="group"
       aria-labelledby={titleId}
     >
       <title id={titleId}>{label}</title>

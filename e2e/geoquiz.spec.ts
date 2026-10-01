@@ -8,6 +8,11 @@ test("South America starts directly and waits for Next", async ({ page }) => {
   await expect(page.getByText("Choose a region")).toHaveCount(0);
 
   const target = await page.locator(".prompt h1").innerText();
+  const map = page.getByRole("group", {
+    name: `Map of South America. Find ${target}.`,
+  });
+  await expect(map).toBeVisible();
+  await expect(map.getByRole("button", { name: target }).first()).toBeVisible();
   await page.getByRole("button", { name: target }).first().click();
 
   await expect(page.getByText("Correct!")).toBeVisible();

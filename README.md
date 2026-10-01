@@ -15,7 +15,7 @@ Geoquiz is a mobile-first country-location game. Choose a continent and geograph
 
 ## Run locally
 
-Requirements: Node.js 20 or newer and npm.
+Requirements: Node.js 20.19+ or 22.12+ and npm.
 
 ```bash
 npm install
