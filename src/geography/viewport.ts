@@ -2,14 +2,18 @@ import {
   geoArea,
   geoCentroid,
   geoDistance,
-  type ExtendedFeature,
-  type ExtendedFeatureCollection,
-  type GeoGeometryObjects,
 } from "d3-geo";
-import type { Polygon, Position } from "geojson";
+import type {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  MultiPolygon,
+  Polygon,
+  Position,
+} from "geojson";
 
-export type MapFeature = ExtendedFeature<GeoGeometryObjects>;
-type PolygonFeature = ExtendedFeature<Polygon>;
+export type MapFeature = Feature<Polygon | MultiPolygon, GeoJsonProperties>;
+type PolygonFeature = Feature<Polygon, GeoJsonProperties>;
 
 const NEARBY_RADIANS = (8 * Math.PI) / 180;
 const SUBSTANTIAL_COMPONENT = 0.2;
@@ -53,7 +57,7 @@ const radius = (feature: PolygonFeature, center: [number, number]) =>
  */
 export function focusFeatureCollection(
   features: MapFeature[],
-): ExtendedFeatureCollection<GeoGeometryObjects> {
+): FeatureCollection<Polygon, GeoJsonProperties> {
   const countries = features.map((source) => {
     const parts = polygonFeatures(source)
       .map((feature) => ({

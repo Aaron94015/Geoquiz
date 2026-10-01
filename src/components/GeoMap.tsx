@@ -1,5 +1,5 @@
 import { useId, useMemo } from "react";
-import { geoEqualEarth, geoPath, type GeoProjection } from "d3-geo";
+import { geoEqualEarth, geoPath } from "d3-geo";
 import type { Country, Region } from "../data/geography";
 import { featuresFor } from "../geography/boundaries";
 import { markerCoordinates } from "../geography/markers";
@@ -54,7 +54,7 @@ export function GeoMap({
       );
     return p;
   }, [items]);
-  const path = geoPath(projection as GeoProjection);
+  const path = geoPath(projection);
   const markers = useMemo(
     () =>
       layoutMarkerPoints(
@@ -63,10 +63,7 @@ export function GeoMap({
           .filter((country) => markerCoordinates[country.code])
           .map((item) => ({
             item,
-            anchor: (projection(markerCoordinates[item.code]) ?? [0, 0]) as [
-              number,
-              number,
-            ],
+            anchor: projection(markerCoordinates[item.code]) ?? [0, 0],
           })),
         WIDTH,
         HEIGHT,
