@@ -4,6 +4,7 @@ export const markerCoordinates: Record<string, [number, number]> = {
   SMR: [12.46, 43.94],
   MCO: [7.42, 43.74],
   LIE: [9.55, 47.16],
+  LUX: [6.13, 49.82],
   MLT: [14.38, 35.94],
   SGP: [103.82, 1.35],
   MDV: [73.22, 3.2],

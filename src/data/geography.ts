@@ -338,39 +338,25 @@ export const regions: Region[] = [
     ],
   },
   {
-    id: "oceania-aunz",
+    id: "oceania",
     continentId: "oceania",
-    name: "Australia and New Zealand",
-    countries: [c("AUS", "Australia"), c("NZL", "New Zealand")],
-  },
-  {
-    id: "oceania-melanesia",
-    continentId: "oceania",
-    name: "Melanesia",
+    name: "Oceania",
     countries: [
+      c("AUS", "Australia"),
+      c("NZL", "New Zealand"),
       c("FJI", "Fiji"),
       c("PNG", "Papua New Guinea"),
       c("SLB", "Solomon Islands", ["Solomon Is."]),
       c("VUT", "Vanuatu"),
-    ],
-  },
-  {
-    id: "oceania-micronesia",
-    continentId: "oceania",
-    name: "Micronesia",
-    countries: [
       c("FSM", "Federated States of Micronesia", ["Micronesia"]),
       c("KIR", "Kiribati"),
       c("MHL", "Marshall Islands"),
       c("NRU", "Nauru"),
       c("PLW", "Palau"),
+      c("WSM", "Samoa"),
+      c("TON", "Tonga"),
+      c("TUV", "Tuvalu"),
     ],
-  },
-  {
-    id: "oceania-polynesia",
-    continentId: "oceania",
-    name: "Polynesia",
-    countries: [c("WSM", "Samoa"), c("TON", "Tonga"), c("TUV", "Tuvalu")],
   },
 ];
 export const continents: Continent[] = [
@@ -410,12 +396,7 @@ export const continents: Continent[] = [
   {
     id: "oceania",
     name: "Oceania",
-    regionIds: [
-      "oceania-aunz",
-      "oceania-melanesia",
-      "oceania-micronesia",
-      "oceania-polynesia",
-    ],
+    regionIds: ["oceania"],
   },
 ];
 export const regionById = (id: string) => regions.find((r) => r.id === id);

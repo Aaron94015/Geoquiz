@@ -130,9 +130,35 @@ strong {
   height: 100%;
   max-height: 52vh;
   overflow: hidden;
+  touch-action: none;
+  user-select: none;
 }
 .ocean {
   fill: #dcebe7;
+}
+.map-viewport {
+  transition: transform 260ms ease-out;
+}
+.geo-map.is-zoomed .map-viewport {
+  transition: none;
+}
+.section-ocean {
+  fill: #dcebe7;
+  stroke: #aac3bc;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+.atlas-section.inset .section-ocean {
+  fill: #d4e5e1;
+  stroke: #6f9189;
+  stroke-width: 2;
+}
+.inset-label {
+  fill: #486762;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  pointer-events: none;
 }
 .country {
   fill: #faf9f4;
@@ -159,7 +185,7 @@ strong {
 .region-hit {
   fill: transparent;
   stroke: transparent;
-  stroke-width: 14;
+  stroke-width: 0;
   vector-effect: non-scaling-stroke;
   cursor: pointer;
   pointer-events: all;
@@ -234,7 +260,7 @@ strong {
   height: 100dvh;
   overflow: hidden;
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto minmax(300px, 1fr) auto;
   background: var(--cream);
   padding: max(10px, env(safe-area-inset-top))
     max(14px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom))
@@ -280,7 +306,7 @@ strong {
 }
 .prompt {
   text-align: center;
-  padding: 8px 0 2px;
+  padding: 3px 0 0;
 }
 .prompt span {
   text-transform: uppercase;
@@ -298,7 +324,7 @@ strong {
   min-height: 0;
   display: grid;
   place-items: center;
-  padding: 4px 0;
+  padding: 0;
 }
 .map-stage .geo-map {
   max-height: 100%;
@@ -306,7 +332,7 @@ strong {
   width: 100%;
 }
 .answer-panel {
-  min-height: 58px;
+  min-height: 54px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -375,6 +401,26 @@ strong {
   fill: transparent;
   stroke: transparent;
   pointer-events: all;
+}
+.marker,
+.marker * {
+  pointer-events: none;
+}
+.zoom-controls {
+  color: var(--ink);
+  cursor: pointer;
+}
+.zoom-controls circle {
+  fill: #fff;
+  stroke: #91aea7;
+  stroke-width: 2;
+}
+.zoom-controls text {
+  fill: currentColor;
+  font-size: 17px;
+  font-weight: 800;
+  text-anchor: middle;
+  pointer-events: none;
 }
 .marker-ring {
   fill: #fff;
@@ -493,6 +539,22 @@ strong {
   }
   .feedback small {
     font-size: 0.7rem;
+  }
+}
+@media (max-width: 520px) {
+  .quiz-screen {
+    padding-top: max(6px, env(safe-area-inset-top));
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+  }
+  .quiz-top .icon-button {
+    width: 40px;
+    height: 40px;
+  }
+  .prompt h1 {
+    font-size: clamp(1.55rem, 7vw, 2.15rem);
+  }
+  .answer-panel {
+    padding-top: 2px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
