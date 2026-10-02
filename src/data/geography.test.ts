@@ -19,6 +19,11 @@ describe("geographic taxonomy", () => {
     expect(continent.regionIds).toEqual(["south-america"]);
     expect(regionById("south-america")?.countries).toHaveLength(12);
   });
+  it("has one 14-country Oceania region", () => {
+    const continent = continents.find((c) => c.id === "oceania")!;
+    expect(continent.regionIds).toEqual(["oceania"]);
+    expect(regionById("oceania")?.countries).toHaveLength(14);
+  });
   it("assigns all regions to their declared continent", () => {
     for (const c of continents)
       expect(
